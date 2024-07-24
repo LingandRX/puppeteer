@@ -5,7 +5,18 @@ import 'dotenv/config.js'
     const browser = await launch({ headless: true, args: [`--window-size=1920,1080`], defaultViewport: { width: 1920, height: 1080 } });
     const page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
-    await page.goto('https://dev-dmp.meiguanjia.net/login');
+    const dev = 'https://dev-dmp.meiguanjia.net/login';
+    const stging = 'https://boss.aizhb.net/login';
+    let current = '';
+    if (process.env.PROFILE === 'dev') {
+        current = dev;
+    } else if (process.env.PROFILE === 'stging') {
+        current = stging;
+    }
+
+    console.log(current);
+    console.log(process.env.ACCOUNT);
+    await page.goto(current);
     await page.locator('#userName input').fill(process.env.ACCOUNT);
     await page.locator('.forgot_box').click();
     await page.waitForSelector('.modify_main');
@@ -18,6 +29,10 @@ import 'dotenv/config.js'
     const arcoMessage = await page.$eval('.arco-message .arco-message-content', node => node.innerHTML);
     await page.screenshot({ path: 'resetPassword.png' });
     console.log(arcoMessage);
+
+    page.on('console', msg => {
+        console.log('PAGE:', msg.text())
+      })
 
     await browser.close();
 })();

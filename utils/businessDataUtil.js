@@ -1,4 +1,4 @@
-export async function getDate(page, fs) {
+export async function getDate(page, fs, file) {
     await new Promise(r => setTimeout(r, 2000));
     await page.waitForSelector('.ai_custome');
     const aiCustome = await page.$$('.ai_custome .ai_custome_item .amount');
@@ -9,7 +9,6 @@ export async function getDate(page, fs) {
     }
 
     let importStorage = '\n' + JSON.stringify(Array.from(ai)) + '\n';
-    const file = 'businessData.json';//获取file
     fs.appendFileSync(file, importStorage, 'utf-8');
 
     const elementHandle = await page.waitForSelector('.bi_warp iframe');
@@ -26,8 +25,12 @@ export async function getDate(page, fs) {
         console.log('#label-content not found in the iframe');
     }
 
-    importStorage = '\n' + JSON.stringify(Array.from(its)) + '\n';
+    importStorage = JSON.stringify(Array.from(its)) + '\n';
     fs.appendFileSync(file, importStorage, 'utf-8');
+}
 
-    // console.log(its);
+export async function cleanType(page, element, timeContent) {
+    const time = await page.$(element);
+    await time.click({ clickCount: 3 });
+    await time.type(timeContent, { delay: 100 });
 }

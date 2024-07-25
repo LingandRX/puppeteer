@@ -18,7 +18,7 @@ import 'dotenv/config.js';
     const localStorage = await page.evaluate(() => Object.assign({}, window.localStorage));
 
     const importStorage = JSON.stringify(localStorage);
-    const file = 'user.json';//获取file
+    const file = './data/user.json';
     fs.writeFileSync(file, importStorage, 'utf-8');
     await browser.close();
 })();

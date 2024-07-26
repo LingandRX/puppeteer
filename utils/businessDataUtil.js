@@ -8,7 +8,7 @@ export async function getDate(page, fs, file) {
         ai.add(str);
     }
 
-    let importStorage = '\n' + JSON.stringify(Array.from(ai)) + '\n';
+    let importStorage = '\n' + JSON.stringify(Array.from(ai), null, 2) + '\n';
     fs.appendFileSync(file, importStorage, 'utf-8');
 
     const elementHandle = await page.waitForSelector('.bi_warp iframe');
@@ -25,7 +25,7 @@ export async function getDate(page, fs, file) {
         console.log('#label-content not found in the iframe');
     }
 
-    importStorage = JSON.stringify(Array.from(its)) + '\n';
+    importStorage = JSON.stringify(Array.from(its), null, 2) + '\n';
     fs.appendFileSync(file, importStorage, 'utf-8');
 }
 

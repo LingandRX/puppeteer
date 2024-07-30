@@ -1,6 +1,7 @@
 import { launch } from 'puppeteer';
 import 'dotenv/config.js'
 import { injectionCookie } from '../utils/userUtils.js';
+import fs from 'fs';
 
 (async () => {
     const browser = await launch({ headless: false, args: [`--window-size=1920,1080`], defaultViewport: { width: 1920, height: 1080 } });
@@ -12,15 +13,26 @@ import { injectionCookie } from '../utils/userUtils.js';
     await injectionCookie(page, webUrl, cookieFileUrl);
 
     const hotItems = await page.$$('.HotList-list .HotItem');
-    // console.log(hotItems);
     console.log("========");
+
+    const hotText = new Array();
+
     for (const hot in hotItems) {
         if (Object.hasOwnProperty.call(hotItems, hot)) {
             const element = hotItems[hot];
-            const textContent = await page.evaluate(node => node.textContent.trim(), element);
-            console.log(textContent);
+
+            const h2Element = await element.$('h2');
+            const pElement = await element.$('p');
+
+            const title = h2Element != null ? await h2Element.evaluate(e => e.textContent) : '';
+            const excerpt = pElement != null ? await pElement.evaluate(e => e.textContent) : '';
+
+            hotText.push({ title, excerpt });
         }
     }
+    console.log("end...");
 
-    // await browser.close();
+    fs.writeFileSync('./data/zhihuData.json', JSON.stringify(hotText, null, 2));
+
+    await browser.close();
 })();

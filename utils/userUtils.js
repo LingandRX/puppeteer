@@ -20,3 +20,20 @@ export async function setLocalStorage(page, file) {
 
     console.log('set success');
 }
+
+/**
+ * @param {Page} page 
+ * @param {String} webUrl 网站
+ * @param {String} cookieFile cookie地址Url
+ */
+export async function injectionCookie(page, webUrl, cookieFile) {
+    try {
+        await page.goto(webUrl);
+        const cookies = JSON.parse(fs.readFileSync(cookieFile, 'utf-8'));
+        console.log(cookies);
+        await page.setCookie(...cookies);
+        await page.goto(webUrl);
+    } catch (error) {
+        console.error(error);
+    }
+}

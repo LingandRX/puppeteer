@@ -6,6 +6,7 @@ import 'dotenv/config.js';
     const browser = await launch({ headless: true, args: [`--window-size=1920,1080`], defaultViewport: { width: 1920, height: 1080 } });
     const page = await browser.newPage();
     await page.goto('https://dev-dmp.meiguanjia.net/login');
+    // await page.goto('https://boss.aizhb.net/login');
     await page.locator('#userName input').fill(process.env.ACCOUNT);
     await page.locator('#passWord input').fill(process.env.PASSWORD);
     await page.locator('[type="submit"]').click();

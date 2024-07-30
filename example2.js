@@ -2,13 +2,14 @@ import { launch } from 'puppeteer';
 import fs from 'fs';
 import 'dotenv/config.js'
 import { setLocalStorage } from './utils/userUtils.js';
-import { getDate, cleanType } from './utils/businessDataUtil.js';
+import { getDate, cleanType, changeTimeDimension } from './utils/businessDataUtil.js';
 
 (async () => {
     const browser = await launch({ headless: false, args: [`--window-size=1920,1080`], defaultViewport: { width: 1920, height: 1080 } });
     const page = await browser.newPage();
     setLocalStorage(page, '.\\data\\user.json');
     await page.goto('https://dev-dmp.meiguanjia.net/report/businessData');
+    // await page.goto('https://boss.aizhb.net/report/businessData');
 
     await page.waitForSelector('.menu-list-second');
     const childElements = await page.$$('.menu-list-second .menu-list-second-item');
@@ -16,6 +17,8 @@ import { getDate, cleanType } from './utils/businessDataUtil.js';
     await childElements[1].click();
     const str = await page.evaluate(node => node.textContent.trim(), childElements[1]);
     console.log(str);
+
+    await changeTimeDimension(page, '周报');
 
     const file = './data/businessData.json';
 

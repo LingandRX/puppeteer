@@ -34,3 +34,22 @@ export async function cleanType(page, element, timeContent) {
     await time.click({ clickCount: 3 });
     await time.type(timeContent, { delay: 100 });
 }
+
+export async function changeTimeDimension(page, timeDimension) {
+    let rb = await page.$('.arco-space-item .arco-select-view-value');
+    let s = await page.evaluate(node => node.textContent.trim(), rb);
+    console.log(s);
+
+    await rb.click();
+    const timeMap = new Map();
+    rb = await page.$$('.arco-select-dropdown-list .arco-select-option');
+    for (const iterator of rb) {
+        s = await page.evaluate(node => node.textContent.trim(), iterator)
+        console.log(s);
+        timeMap.set(s, iterator);
+    }
+    console.log('===');
+    console.log(timeMap);
+
+    await timeMap.get(timeDimension).click();
+}

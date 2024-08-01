@@ -1,31 +1,41 @@
 export async function getDate(page, fs, file) {
+    const its = new Map();
+
     await new Promise(r => setTimeout(r, 2000));
     await page.waitForSelector('.ai_custome');
-    const aiCustome = await page.$$('.ai_custome .ai_custome_item .amount');
-    let ai = new Set();
-    for (const e of aiCustome) {
-        let str = await page.evaluate(element => element.textContent, e);
-        ai.add(str);
-    }
+    const aiCustome = await page.$$('.ai_custome .ai_custome_item');
 
-    let importStorage = '\n' + JSON.stringify(Array.from(ai), null, 2) + '\n';
-    fs.appendFileSync(file, importStorage, 'utf-8');
+    if (aiCustome.length > 0) {
+        for (const iterator of aiCustome) {
+            const key = await iterator.$('span');
+            const value = await iterator.$('div');
+            const keyStr = await page.evaluate(element => element.textContent.trim(), key);
+            const valueStr = await page.evaluate(element => element.textContent.trim(), value);
+            its.set(keyStr, valueStr);
+        }
+    } else {
+        console.log('.ai_custome_item not found');
+    }
 
     const elementHandle = await page.waitForSelector('.bi_warp iframe');
     const frame = await elementHandle.contentFrame();
     await frame.waitForSelector('#label-content');
-    const items = await frame.$$('#label-content'); // Use $$ to get all matching elements
-    let its = new Set();
-    if (items.length > 0) { // Check if items array is not empty
+    const items = await frame.$$('#label-content');
+
+    if (items.length > 0) {
         for (const e of items) {
-            let str = await frame.evaluate(element => element.textContent, e); // Use frame.evaluate() here
-            its.add(str.replace(/\s+/g, ' '));
+            const key = await e.$('span p');
+            const value = await e.$('span span');
+            const keyStr = await frame.evaluate(element => element.textContent.trim(), key);
+            const valueStr = await frame.evaluate(element => element.textContent.trim(), value);
+
+            its.set(keyStr, valueStr);
         }
     } else {
         console.log('#label-content not found in the iframe');
     }
 
-    importStorage = JSON.stringify(Array.from(its), null, 2) + '\n';
+    const importStorage = JSON.stringify(Array.from(its), null, 2);
     fs.appendFileSync(file, importStorage, 'utf-8');
 }
 
@@ -35,21 +45,29 @@ export async function cleanType(page, element, timeContent) {
     await time.type(timeContent, { delay: 100 });
 }
 
-export async function changeTimeDimension(page, timeDimension) {
+/**
+ * 
+ * @param {Page} page 
+ * @param {Number} dismensionNumber 
+ */
+export async function changeTimeDimension(page, dismensionNumber) {
+    const timeDimension = [
+        '日报',
+        '周报',
+        '月报',
+        '自定义'
+    ];
+
     let rb = await page.$('.arco-space-item .arco-select-view-value');
     let s = await page.evaluate(node => node.textContent.trim(), rb);
-    console.log(s);
 
     await rb.click();
     const timeMap = new Map();
     rb = await page.$$('.arco-select-dropdown-list .arco-select-option');
     for (const iterator of rb) {
         s = await page.evaluate(node => node.textContent.trim(), iterator)
-        console.log(s);
         timeMap.set(s, iterator);
     }
-    console.log('===');
-    console.log(timeMap);
 
-    await timeMap.get(timeDimension).click();
+    await timeMap.get(timeDimension[dismensionNumber]).click();
 }

@@ -18,24 +18,13 @@ import { getDate, cleanType, changeTimeDimension } from './utils/businessDataUti
     const str = await page.evaluate(node => node.textContent.trim(), childElements[1]);
     console.log(str);
 
-    await changeTimeDimension(page, '周报');
+    // await changeTimeDimension(page, '周报');
 
     const file = './data/businessData.json';
 
     fs.writeFileSync(file, '', 'utf-8');
 
-    await getDate(page, fs, file);
-    console.log('========');
-
-    await cleanType(page, '.arco-picker-start-time', '2024-06');
-    await getDate(page, fs, file);
-    console.log('========');
-
-    await cleanType(page, '.arco-picker-start-time', '2024-05');
-    await getDate(page, fs, file);
-    console.log('========');
-
-    await cleanType(page, '.arco-picker-start-time', '2024-04');
+    await cleanType(page, '.arco-picker-start-time', '2024-07');
     await getDate(page, fs, file);
     console.log('========');
 

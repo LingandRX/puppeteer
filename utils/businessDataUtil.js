@@ -1,3 +1,9 @@
+/**
+ * 
+ * @param {Page} page 
+ * @param {fs} fs 
+ * @param {String} file 存储文件位置
+ */
 export async function getDate(page, fs, file) {
     const its = new Map();
 
@@ -35,7 +41,15 @@ export async function getDate(page, fs, file) {
         console.log('#label-content not found in the iframe');
     }
 
-    const importStorage = JSON.stringify(Array.from(its), null, 2);
+    const convert = {};
+
+    for (const [key, value] of its) {
+        convert[key] = value;
+    }
+
+    console.log(convert);
+
+    const importStorage = JSON.stringify(convert, null, 2);
     fs.appendFileSync(file, importStorage, 'utf-8');
 }
 

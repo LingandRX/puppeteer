@@ -5,7 +5,7 @@ import { setLocalStorage } from './utils/userUtils.js';
 import { getDate, cleanType, changeTimeDimension } from './utils/businessDataUtil.js';
 
 (async () => {
-    const browser = await launch({ headless: false, args: [`--window-size=1920,1080`], defaultViewport: { width: 1920, height: 1080 } });
+    const browser = await launch({ headless: true, args: [`--window-size=1920,1080`], defaultViewport: { width: 1920, height: 1080 } });
     const page = await browser.newPage();
     setLocalStorage(page, '.\\data\\user.json');
     await page.goto('https://dev-dmp.meiguanjia.net/report/businessData');
@@ -24,7 +24,7 @@ import { getDate, cleanType, changeTimeDimension } from './utils/businessDataUti
 
     fs.writeFileSync(file, '', 'utf-8');
 
-    await cleanType(page, '.arco-picker-start-time', '2024-07');
+    await cleanType(page, '.arco-picker-start-time', '2024-05');
     await getDate(page, fs, file);
     console.log('========');
 

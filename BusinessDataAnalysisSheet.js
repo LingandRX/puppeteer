@@ -9,7 +9,7 @@ import 'dotenv/config.js'
 
     console.log(current);
     console.log(process.env.ACCOUNT);
-
+a
     const item = await page.$eval('.item.cur', node=>node.innerHTML);
     console.log(item);
     // const arcoMessage = await page.$eval('.arco-message .arco-message-content', node => node.innerHTML);

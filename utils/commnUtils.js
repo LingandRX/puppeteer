@@ -1,4 +1,44 @@
 /**
+ * 设置月报时间
+ * @param {Page} page 
+ * @param {String} element 
+ * @param {String} timeContent 
+ */
+export async function setMonthTime(page, element, timeContent) {
+    await new Promise(r => setTimeout(r, 2000));
+    const time = await page.$(element);
+    await time.click({ clickCount: 3 });
+    await time.type(timeContent, { delay: 100 });
+}
+
+/**
+ * 
+ * @param {Page} page 
+ * @param {Number} dismensionNumber 
+ */
+export async function changeTimeDimension(page, dismensionNumber) {
+    const timeDimension = [
+        '日报',
+        '周报',
+        '月报',
+        '自定义'
+    ];
+
+    let rb = await page.$('.arco-space-item .arco-select-view-value');
+    let s = await page.evaluate(node => node.textContent.trim(), rb);
+
+    await rb.click();
+    const timeMap = new Map();
+    rb = await page.$$('.arco-select-dropdown-list .arco-select-option');
+    for (const iterator of rb) {
+        s = await page.evaluate(node => node.textContent.trim(), iterator)
+        timeMap.set(s, iterator);
+    }
+    console.log(timeDimension[dismensionNumber]);
+    await timeMap.get(timeDimension[dismensionNumber]).click();
+}
+
+/**
  * 
  * @param {Page} page 
  * @param {fs} fs 
@@ -8,20 +48,6 @@ export async function getDate(page, fs, file) {
     const its = new Map();
 
     await new Promise(r => setTimeout(r, 2000));
-    await page.waitForSelector('.ai_custome');
-    const aiCustome = await page.$$('.ai_custome .ai_custome_item');
-
-    if (aiCustome.length > 0) {
-        for (const iterator of aiCustome) {
-            const key = await iterator.$('span');
-            const value = await iterator.$('div');
-            const keyStr = await page.evaluate(element => element.textContent.trim(), key);
-            const valueStr = await page.evaluate(element => element.textContent.trim(), value);
-            its.set(keyStr, valueStr);
-        }
-    } else {
-        console.log('.ai_custome_item not found');
-    }
 
     const elementHandle = await page.waitForSelector('.bi_warp iframe');
     const frame = await elementHandle.contentFrame();

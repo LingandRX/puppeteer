@@ -8,6 +8,11 @@ import { setMonthTime } from './utils/commnUtils.js'
 (async () => {
     const browser = await launch({ headless: true, args: [`--window-size=1920,1080`], defaultViewport: { width: 1920, height: 1080 } });
     const page = await browser.newPage();
+
+    page.on('response', async(response) => {
+        console.log(response.url());
+    });
+
     setLocalStorage(page, '.\\data\\user.json');
     await page.goto('https://dev-dmp.meiguanjia.net/report/businessData');
     // await page.goto('https://boss.aizhb.net/report/businessData');

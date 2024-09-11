@@ -2,7 +2,7 @@ import fs from "fs";
 
 /**
  * 设置页面的LocalStorage
- * @param {*} page
+ * @param {import('puppeteer').Page} page
  * @param {String} file 用户信息
  */
 export async function setLocalStorage(page, file) {

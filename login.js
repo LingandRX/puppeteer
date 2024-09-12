@@ -3,7 +3,7 @@ import fs from 'fs';
 import 'dotenv/config.js';
 
 (async () => {
-    const browser = await launch({ headless: true, args: [`--window-size=1920,1080`], defaultViewport: { width: 1920, height: 1080 } });
+    const browser = await launch({ headless: false, args: [`--window-size=1920,1080`], defaultViewport: { width: 1920, height: 1080 } });
     const page = await browser.newPage();
     await page.goto('https://dev-dmp.meiguanjia.net/login');
     // await page.goto('https://boss.aizhb.net/login');
@@ -20,6 +20,10 @@ import 'dotenv/config.js';
 
     const importStorage = JSON.stringify(localStorage);
     const file = './data/user.json';
+    if (!fs.existsSync('./data/')) {
+        fs.mkdirSync('./data/');
+        console.log('文件夹不存在，创建文件夹');
+    }
     fs.writeFileSync(file, importStorage, 'utf-8');
     await browser.close();
 })();

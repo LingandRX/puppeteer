@@ -32,7 +32,7 @@ import 'dotenv/config.js'
 
     page.on('console', msg => {
         console.log('PAGE:', msg.text())
-      })
+    })
 
     await browser.close();
 })();

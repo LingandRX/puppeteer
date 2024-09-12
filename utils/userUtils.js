@@ -17,4 +17,6 @@ export async function setLocalStorage(page, file) {
         localStorage.setItem('merchant_login_data', localStorageTest.merchant_login_data);
         localStorage.setItem('merchant_metadata_data', localStorageTest.merchant_metadata_data);
     }, localStorageTest);
+
+    console.log('set success');
 }
